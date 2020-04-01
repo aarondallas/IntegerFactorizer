@@ -2,13 +2,14 @@
 Prime Factorizer
 ################
 
-.. codeauthor:: Aaron Dallas
+:Author: Aaron Dallas
 
 Find the prime factors for a positive integer
 
 Synopsis
 ========
 
+::
  factor_primes.py --no-cache --cache-file="my-cache-file.dbm" [int]
 
 Description
