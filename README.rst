@@ -10,6 +10,7 @@ Synopsis
 ========
 
 ::
+
  factor_primes.py --no-cache --cache-file="my-cache-file.dbm" [int]
 
 Description
