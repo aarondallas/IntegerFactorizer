@@ -1,4 +1,5 @@
 .idea
+junit
 __pycache__
 venv
 .hypothesis
