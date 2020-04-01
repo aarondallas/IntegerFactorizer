@@ -6,6 +6,8 @@ Prime Factorizer
 
 Find the prime factors for a positive integer
 
+|badge|
+
 Synopsis
 ========
 
@@ -18,4 +20,4 @@ This module finds the prime factors for a given integer and caches
 its results in a dbm file. The cache file may be specified; if not
 a default cache file will be created and persist.
 
-![](https://github.com/aarondallas/IntegerFactorizer/workflows/Integer%20Factorizer/badge.svg)
+ .. |badge| image:: https://github.com/aarondallas/IntegerFactorizer/workflows/Integer%20Factorizer/badge.svg
