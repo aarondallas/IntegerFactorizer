@@ -1,6 +1,26 @@
 import math
-import shelve
-from typing import Iterator, List
+from abc import ABC, abstractmethod
+from typing import Iterator, List, Type, Hashable, Any
+from ._version import __version__
+
+
+class AbstractCacher(ABC):
+    """
+    Abstract Class to implement a cacher
+
+    I like abstract classes especially when combined with a Factory,
+    but in this instance duck type testing could also work, i.e.:
+
+    if not hasattr(cacher, 'save') or not hasattr(cacher, 'get'):
+        raise ValueError
+    """
+    @abstractmethod
+    def save(self, key: Hashable, value: Any):
+        pass
+
+    @abstractmethod
+    def get(self, key: Hashable):
+        pass
 
 
 class IntegerFactorizer:
@@ -8,15 +28,13 @@ class IntegerFactorizer:
     Factor integers
     Cache results
     """
-    def __init__(self, cache_file=None):
-        if cache_file is None:
-            cache_file = ".integer_factorizer_cache.dbm"
-
-        self.__cache_file = cache_file
-        self.__cache = shelve.open(cache_file)
-
-    def __del__(self):
-        self.__cache.close()
+    def __init__(self, cacher: Type[AbstractCacher]=None):
+        if cacher is not None:
+            if not issubclass(cacher.__class__, AbstractCacher):
+                raise ValueError("value of cacher must subclass AbstractCacher")
+            self.__cacher = cacher
+        else:
+            self.__cacher = None
 
     @staticmethod
     def gen_prime_factors(n: int) -> Iterator[int]:
@@ -56,9 +74,13 @@ class IntegerFactorizer:
         :return: prime factors
         :rtype: List[int]
         """
-        n_str = str(n)  # shelve requires that keys be strings
-        if n_str not in self.__cache:
-            self.__cache[n_str] = list(self.gen_prime_factors(n))
-            self.__cache.sync()
+        val = None
+        if self.__cacher is not None:
+            val = self.__cacher.get(n)
+            if val is None:
+                val = list(self.gen_prime_factors(n))
+                self.__cacher.save(n, val)
+        else:
+            val = list(self.gen_prime_factors(n))
 
-        return self.__cache[n_str]
+        return val
